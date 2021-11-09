@@ -1467,6 +1467,7 @@
         "type": "datasource"
       },
       {
+        "datasource": "${datasource}",
         "allValue": null,
         "definition": "label_values(ldap_monitor_starttime,instance)",
         "description": null,
