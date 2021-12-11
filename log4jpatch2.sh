@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 # Executing the fix only if fid is installed
-if [ -e /opt/radiantone/vds/vds_server/conf/cloud.properties ] ; then
+if test -f /opt/radiantone/vds/vds_server/conf/cloud.properties; then
         if [[ -z "${RLI_HOME}" ]]; then
                 echo "RLI_HOME IS NOT DEFINED"
                 exit 0
