@@ -20,34 +20,33 @@ for i in $(find "$RLI_HOME" -iname "log4j-core-*.jar" -not -path "$RLI_HOME/back
     echo "$i contains the CVE-2021-44228 vulnerability."
     echo "Patching $i"
     cp "$i" "$RLI_HOME/backup"
-    $workFolder=$RLI_HOME+"/work/log4jfixes"
+    workFolder="${RLI_HOME}/work/log4jfixes"
     mkdir $workFolder
-    cp $workFolder
+    cd $workFolder
     echo "Performing JAR extraction of $i..."
-    $RLI_HOME+"/jdk/bin/jar -xvf "+$i
-    $jndilookupFile = $workFolder+"/org/apache/logging/log4j/core/lookup/JndiLookup.class"
+    eval "${RLI_HOME}/jdk/bin/jar -xvf ${i}"
+    jndilookupFile="${workFolder}/org/apache/logging/log4j/core/lookup/JndiLookup.class"
     echo "Removing offending class from extracted JAR..."
     rm $jndilookupFile
-    $RLI_HOME+"/jdk/bin/jar -cvf "+$i+" .\"
+    eval "${RLI_HOME}/jdk/bin/jar -cvf ${i} ./"
     echo "Successfully recreated the JAR for $i"
-    echo -e "$i has been successfully patched\n"
+    echo "${i} has been successfully patched\n"
     echo "Cleaning the work folder"
     rm -rf $workFolder
     echo "JAR patching completed for $i"
   else
-    echo -e "$i has been already been patched for CVE-2021-44228 and is safe to use.\n"
+    echo $i has been already been patched for CVE-2021-44228 and is safe to use.\n
   fi
 done
 unset IFS
 
 #For Versions 7.3.17 and above, the following extra steps are required, which disable the 'docs' web app.
-if [ -d "$RLI_HOME"/vds_server/work/docs ]; then
-  echo "Deleting the folder $RLI_HOME/vds_server/work/docs"
-  rm -rf "$RLI_HOME"/vds_server/work/docs
+if [ -d $RLI_HOME/vds_server/work/docs ]; then
+  echo Deleting the folder $RLI_HOME/vds_server/work/docs
+  rm -rf $RLI_HOME/vds_server/work/docs
 fi
 
-if [ -f "$RLI_HOME"/apps/web/docs.war ]; then
-  echo "Moving the file $RLI_HOME/apps/web/docs.war to $RLI_HOME/vds/apps/web/disabled"
+if [ -f $RLI_HOME/apps/web/docs.war ]; then
+  echo Moving the file $RLI_HOME/apps/web/docs.war to $RLI_HOME/vds/apps/web/disabled
   mv -f $RLI_HOME/apps/web/docs.war $RLI_HOME/apps/web/disabled
 fi
-
