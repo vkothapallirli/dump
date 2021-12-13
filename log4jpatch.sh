@@ -47,6 +47,6 @@ if [ -d $RLI_HOME/vds_server/work/docs ]; then
 fi
 
 if [ -f $RLI_HOME/apps/web/docs.war ]; then
-  echo Moving the file $RLI_HOME/apps/web/docs.war to $RLI_HOME/vds/apps/web/disabled
+  echo Moving the file $RLI_HOME/apps/web/docs.war to $RLI_HOME/apps/web/disabled
   mv -f $RLI_HOME/apps/web/docs.war $RLI_HOME/apps/web/disabled
 fi
