@@ -32,6 +32,7 @@ for i in $(find "$RLI_HOME" -iname "log4j-core-*.jar" -not -path "$RLI_HOME/back
     echo "Successfully recreated the JAR for $i"
     echo "${i} has been successfully patched\n"
     echo "Cleaning the work folder"
+    cd ..
     rm -rf $workFolder
     echo "JAR patching completed for $i"
   else
