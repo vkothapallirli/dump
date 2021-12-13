@@ -5,15 +5,11 @@
 # e.g: /some/path/radiantone/vds
 # The user will be prompted for confirmation before patching each jar file.
 # If the jar file is already successfully patched, this script will confirm that.
+# This script is forked from officially provided log4jpatch.sh by RadiantLogic Inc. to enable customer to patch without zip dependency.
 
 if [[ -z "${RLI_HOME}" ]]; then
   echo "RLI_HOME IS NOT DEFINED"
   exit 0
-fi
-
-if ! command -v zip &>/dev/null; then
-  echo "The command 'zip' could not be found and is required by this shell script."
-  exit
 fi
 
 mkdir -p "$RLI_HOME/backup"
@@ -22,17 +18,22 @@ for i in $(find "$RLI_HOME" -iname "log4j-core-*.jar" -not -path "$RLI_HOME/back
   "$RLI_HOME"/jdk/bin/jar tf $i | grep -q -i "org/apache/logging/log4j/core/lookup/JndiLookup.class"
   if [ $? -eq 0 ]; then
     echo "$i contains the CVE-2021-44228 vulnerability."
-    read -p "Patch this file (y/n)? " choice
-    case "$choice" in
-    y | Y)
-      echo "Patching $i"
-      cp "$i" "$RLI_HOME/backup"
-      zip -q -d "$i" org/apache/logging/log4j/core/lookup/JndiLookup.class
-      echo -e "$i has been successfully patched\n"
-      ;;
-    n | N) echo -e "File $i won't be patched\n" ;;
-    *) echo -e "File $i won't be patched\n" ;;
-    esac
+    echo "Patching $i"
+    cp "$i" "$RLI_HOME/backup"
+    $workFolder=$RLI_HOME+"\work\log4jfixes
+    mkdir $workFolder
+    cp $workFolder
+    echo "Performing JAR extraction of $i..."
+    $RLI_HOME+"/jdk/bin/jar -xvf "+$i
+    $jndilookupFile = $workFolder+"/org/apache/logging/log4j/core/lookup/JndiLookup.class"
+    echo "Removing offending class from extracted JAR..."
+    rm $jndilookupFile
+    $RLI_HOME+"/jdk/bin/jar -cvf "+$i+" .\"
+    echo "Successfully recreated the JAR for $i"
+    echo -e "$i has been successfully patched\n"
+    echo "Cleaning the work folder"
+    rm -rf $workFolder
+    echo "JAR patching completed for $i"
   else
     echo -e "$i has been already been patched for CVE-2021-44228 and is safe to use.\n"
   fi
