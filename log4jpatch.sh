@@ -20,7 +20,7 @@ for i in $(find "$RLI_HOME" -iname "log4j-core-*.jar" -not -path "$RLI_HOME/back
     echo "$i contains the CVE-2021-44228 vulnerability."
     echo "Patching $i"
     cp "$i" "$RLI_HOME/backup"
-    $workFolder=$RLI_HOME+"\work\log4jfixes
+    $workFolder=$RLI_HOME+"/work/log4jfixes"
     mkdir $workFolder
     cp $workFolder
     echo "Performing JAR extraction of $i..."
